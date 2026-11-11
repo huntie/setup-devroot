@@ -6,7 +6,9 @@
 # rebases the default branch onto the base remote (upstream, else origin),
 # pushes it to origin when origin is a fork, and returns to the branch or
 # commit it started on. The default branch ends level with both remotes,
-# which is the state scripts/checkout --new starts a task branch from. When
+# which is the state scripts/checkout --new starts a task branch from. On a
+# repo of your own with no upstream, commits on the default branch are kept
+# and rebased onto origin; a conflict stops that rebase in place. When
 # commit-cloud is set up (a .commit-cloud/ clone at the root), a Sapling
 # checkout also restores the draft stacks other machines backed up with
 # scripts/commit-cloud.
@@ -25,7 +27,9 @@ case "${1:-}" in
       'Parks uncommitted work as a "WIP <date>" commit where it is, rebases the' \
       'default branch onto upstream (or origin when there is no upstream), pushes' \
       'it to origin when origin is a fork, and returns to the branch or commit it' \
-      'started on.' \
+      'started on. On a repo of your own with no upstream, commits on the' \
+      'default branch are kept and rebased onto origin, and a conflict stops the' \
+      'rebase in place for you to resolve.' \
       'In a Sapling checkout (devroot.vcs=sapling), work on a detached stack is' \
       'parked with sl commit, which keeps it visible. When commit-cloud is set up,' \
       'the draft stacks other machines backed up with scripts/commit-cloud are' \
@@ -34,7 +38,8 @@ case "${1:-}" in
       '  <checkout>   Path to the checkout, relative to the root or absolute.' \
       '               Defaults to the checkout containing the current directory.' \
       '' \
-      'Exits 0 level, 1 error, 2 usage; 3 when the rebase or the push is not clean.'
+      'Exits 0 level, 1 error, 2 usage; 3 when the rebase or the push is not clean,' \
+      'or a rebase is already in progress.'
     exit 0
     ;;
   -*)
@@ -76,6 +81,30 @@ else
 fi
 
 say() { printf '  %s\n' "$*"; }
+
+rebase_in_progress() {
+  local git_dir
+  git_dir=$(git -C "$dir" rev-parse --absolute-git-dir)
+  [ -d "$git_dir/rebase-merge" ] || [ -d "$git_dir/rebase-apply" ]
+}
+
+# Whether origin is the user's own repo, where the default branch takes
+# commits directly.
+origin_is_mine() {
+  command -v gh > /dev/null 2>&1 || return 1
+  local me
+  me=$(gh api user --jq .login 2> /dev/null) || return 1
+  case "$(git -C "$dir" remote get-url origin)" in
+    *[:/]"$me"/*) return 0 ;;
+  esac
+  return 1
+}
+
+# Parking uncommitted work mid-rebase commits the conflict markers.
+if rebase_in_progress; then
+  echo "pull: a rebase is in progress in ${dir#$ROOT/} — finish it with git rebase --continue or --abort, then rerun" >&2
+  exit 3
+fi
 
 printf 'devroot: %s\n' "$ROOT"
 say "checkout ${dir#$ROOT/}"
@@ -140,16 +169,25 @@ finish() {
     say "switch   back to ${start_commit:0:12}"
     git -C "$dir" checkout --quiet --detach "$start_commit"
   fi
-  say "ok       $base level with $1"
+  say "ok       $1"
 }
 
 if git -C "$dir" show-ref --verify --quiet "refs/heads/$base"; then
   say "switch   $base"
   git -C "$dir" checkout --quiet "$base"
   say "rebase   $base onto $base_remote/$base"
-  if ! git -C "$dir" rebase --quiet "$base_remote/$base" > /dev/null 2>&1; then
-    git -C "$dir" rebase --abort
-    echo "pull: $base does not rebase cleanly onto $base_remote/$base — resolve by hand, then rerun" >&2
+  if ! out=$(git -C "$dir" rebase --quiet "$base_remote/$base" 2>&1); then
+    if ! rebase_in_progress; then
+      printf '%s\n' "$out" >&2
+      echo "pull: $base did not rebase onto $base_remote/$base" >&2
+      exit 1
+    fi
+    echo "pull: $base stopped rebasing onto $base_remote/$base at a conflict in:" >&2
+    git -C "$dir" diff --name-only --diff-filter=U | sed 's/^/  /' >&2
+    echo "pull: resolve it, git rebase --continue, then rerun" >&2
+    if [ -n "$start_branch" ] && [ "$start_branch" != "$base" ]; then
+      echo "pull: you started on $start_branch; git switch $start_branch once it is done" >&2
+    fi
     exit 3
   fi
 else
@@ -157,14 +195,19 @@ else
   git -C "$dir" checkout --quiet -b "$base" --track "$base_remote/$base"
 fi
 
-# On a shared repo origin is the base remote: there is nothing to sync, and a
-# local commit on the default branch is never pushed to the canonical repo.
+# With no upstream, origin is the base remote and there is nothing to push. On
+# a shared repo a local commit on the default branch is never pushed to the
+# canonical repo; on a repo of your own the default branch takes commits.
 if [ "$base_remote" = origin ]; then
-  if [ -n "$(git -C "$dir" rev-list "origin/$base..$base")" ]; then
+  ahead=$(git -C "$dir" rev-list --count "origin/$base..$base")
+  if [ "$ahead" -eq 0 ]; then
+    finish "$base level with origin/$base"
+  elif origin_is_mine; then
+    finish "$base on origin/$base, $ahead local commit(s) ahead"
+  else
     echo "pull: $base has commits origin/$base lacks — move them to a task branch by hand" >&2
     exit 3
   fi
-  finish "origin/$base"
   exit 0
 fi
 
@@ -173,4 +216,4 @@ if ! git -C "$dir" push --quiet origin "$base" > /dev/null 2>&1; then
   echo "pull: origin/$base did not fast-forward — push it by hand" >&2
   exit 3
 fi
-finish "$base_remote/$base and origin/$base"
+finish "$base level with $base_remote/$base and origin/$base"
