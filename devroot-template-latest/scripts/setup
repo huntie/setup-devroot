@@ -263,4 +263,5 @@ fi
 
 printf '\n'
 "$ROOT/scripts/sync-workspace"
+[ ! -x "$ROOT/scripts/sync-project-skills" ] || "$ROOT/scripts/sync-project-skills"
 [ "$NEEDS_HUMAN" -eq 0 ] || exit 3
