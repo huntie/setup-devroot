@@ -12,6 +12,9 @@
 # Generated VS Code entry points (scripts/sync-workspace)
 /*.code-workspace
 
+# Generated checkout skill stubs (scripts/sync-project-skills)
+/.claude/skills/*:*/
+
 # Local only VS Code settings
 /.vscode/
 

@@ -170,6 +170,7 @@ finish() {
     git -C "$dir" checkout --quiet --detach "$start_commit"
   fi
   say "ok       $1"
+  [ ! -x "$ROOT/scripts/sync-project-skills" ] || "$ROOT/scripts/sync-project-skills"
 }
 
 if git -C "$dir" show-ref --verify --quiet "refs/heads/$base"; then

@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "d=\"${CLAUDE_PROJECT_DIR:-.}/vault\"; [ -d \"$d/.git\" ] && git -C \"$d\" pull --rebase --autostash -q > /dev/null 2>&1; [ -f \"$d/USER.md\" ] && { echo 'vault/USER.md, who the user is and their goals:'; cat \"$d/USER.md\"; echo; }; [ -f \"$d/index.md\" ] && { echo 'vault/index.md, the vault recall surface:'; cat \"$d/index.md\"; } || true",
+            "command": "r=\"${CLAUDE_PROJECT_DIR:-.}\"; d=\"$r/vault\"; [ -d \"$d/.git\" ] && git -C \"$d\" pull --rebase --autostash -q > /dev/null 2>&1; [ -f \"$d/USER.md\" ] && { echo 'vault/USER.md, who the user is and their goals:'; cat \"$d/USER.md\"; echo; }; [ -f \"$d/index.md\" ] && { echo 'vault/index.md, the vault recall surface:'; cat \"$d/index.md\"; }; [ -x \"$r/scripts/sync-project-skills\" ] && \"$r/scripts/sync-project-skills\" > /dev/null 2>&1 && s=$(\"$r/scripts/sync-project-skills\" --summary) && [ -n \"$s\" ] && { echo; echo \"Checkout skills, listed as <checkout>:<skill> once a file in that checkout is read or edited:\"; echo \"$s\"; }; true",
             "timeout": 30
           }
         ]
