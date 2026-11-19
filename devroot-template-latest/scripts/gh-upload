@@ -10,12 +10,14 @@
 # from a posted PR or issue body on that repository; posting is what publishes
 # it, so the Markdown belongs in the PR description, not only in a commit.
 #
-# When the endpoint fails, or --release is given, the file goes onto a release
-# tagged "assets" through the documented release API instead. Those URLs are
-# public at once on a public repository and uglier. Anything that is not an
-# image or a video is refused; the documented release API covers other files.
+# Only --release puts the file onto a release tagged "assets" through the
+# documented release API. Those URLs are public at once on a public repository,
+# and the release is visible on the repository, so never pass it for a repository
+# you do not own. When the endpoint fails, the script stops rather than fall back.
+# Anything that is not an image or a video is refused.
 #
-# Exit codes: 0 uploaded, 1 error, 2 usage.
+# Exit codes: 0 uploaded, 1 error, 2 usage, 3 the attachment endpoint refused a
+# file and a human must upload it, such as by dragging it into the PR.
 
 set -euo pipefail
 
@@ -51,8 +53,8 @@ while [ $# -gt 0 ]; do
         '  --repo      Repository whose visibility the attachment inherits; the token' \
         '              must be able to push to it.' \
         '  --release   Skip the attachment endpoint and upload to a release tagged' \
-        '              "assets" instead. Also the automatic fallback when the endpoint' \
-        '              fails. Public at once on a public repository.' \
+        '              "assets" instead. Public at once, and visible on the' \
+        '              repository; only for a repository you own.' \
         '' \
         'Exits 0 uploaded, 1 error, 2 usage.'
       exit 0
@@ -150,7 +152,7 @@ for file in "${FILES[@]}"; do
     say "upload   $name -> $REPO (attachment)"
     markdown "$name" "$mime" "$asset"
   else
-    say "note     attachment endpoint returned $status for $name; using the release path"
-    markdown "$name" "$mime" "$(release_upload "$file" "$name")"
+    echo "gh-upload: the attachment endpoint returned $status for $name on $REPO. Drag it into the PR on GitHub, or pass --release only for a repository you own." >&2
+    exit 3
   fi
 done
