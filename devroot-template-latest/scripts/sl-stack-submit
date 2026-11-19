@@ -22,8 +22,9 @@ usage() {
     'Runs sl pr submit in a Sapling checkout, which pushes every draft commit' \
     'under the working copy as a pull request. It pulls first, so commits' \
     'already on main are no longer drafts, then refuses the submit when a draft' \
-    'has another author, or is linked to a pull request whose head is not its' \
-    'pr<number> branch, which sl would use as the base of the one above.' \
+    'has another author, or is linked to a pull request whose head is not a' \
+    'pr<number> branch, which sl would use as the base of the one above. The' \
+    'number in that branch is the one sl guessed, which can differ from the PR.' \
     '' \
     '  <checkout>  Path to the checkout. Defaults to the current directory.' \
     '  --draft     Open new pull requests as drafts.' \
@@ -76,7 +77,7 @@ while read -r node author url; do
   fi
   [ -n "$url" ] || continue
   head=$(gh pr view "$url" --json headRefName --jq .headRefName)
-  if [ "$head" != "pr${url##*/}" ]; then
+  if ! [[ "$head" =~ ^pr[0-9]+$ ]]; then
     echo "sl-stack-submit: $node is linked to $url, whose head is $head" >&2
     refuse=1
   fi
