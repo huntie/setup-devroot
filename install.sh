@@ -6,7 +6,8 @@
 # commit touching the template, and that commit's sha is written to
 # .devroot-version, which update-devroot later reads; --template takes a
 # local copy instead and writes none. Skills come from the public skills
-# repos, the personal set and the vendored pstack principles, through
+# repos, the personal set, the vendored pstack principles and the template
+# repo's own setup-vault and update-devroot, through
 # `npx skills`, installed for two agents so that the copies land under
 # .agents/skills with links from .claude/skills, the layout the workspace's
 # own scripts keep. The workspace's own setup then runs for the GitHub user
@@ -19,7 +20,7 @@ set -euo pipefail
 
 TEMPLATE_REPO="huntie/huntiestack"
 TEMPLATE_DIR="devroot-template-latest"
-SKILLS_REPOS=("huntie/skills" "huntie/skills-pstack-vendored")
+SKILLS_REPOS=("huntie/skills" "huntie/skills-pstack-vendored" "$TEMPLATE_REPO")
 
 DIR=""
 USER_OWNER=""
@@ -31,7 +32,7 @@ while [ $# -gt 0 ]; do
     --user)
       case "${2:-}" in
         '' | */* | -*)
-          echo "setup-devroot: --user needs a GitHub user or org" >&2
+          echo "install.sh: --user needs a GitHub user or org" >&2
           exit 2
           ;;
       esac
@@ -40,7 +41,7 @@ while [ $# -gt 0 ]; do
       ;;
     --template)
       [ $# -ge 2 ] || {
-        echo "setup-devroot: --template needs a directory" >&2
+        echo "install.sh: --template needs a directory" >&2
         exit 2
       }
       TEMPLATE="$2"
@@ -49,13 +50,13 @@ while [ $# -gt 0 ]; do
     --dry-run | -n) DRY=1 ;;
     -h | --help)
       printf '%s\n' \
-        'Usage: setup-devroot <dir> --user <owner> [--template <path>] [--dry-run]' \
+        'Usage: install.sh <dir> --user <owner> [--template <path>] [--dry-run]' \
         '' \
         'Creates a devroot workspace at <dir>, which must be new or empty: the' \
         "$TEMPLATE_DIR/ files from $TEMPLATE_REPO at its latest commit, recorded in" \
-        ".devroot-version, then every skill from ${SKILLS_REPOS[0]} and" \
-        "${SKILLS_REPOS[1]} installed with npx skills, then an initial commit, then" \
-        'the workspace'\''s own scripts/setup.' \
+        ".devroot-version, then every skill from ${SKILLS_REPOS[0]}," \
+        "${SKILLS_REPOS[1]} and ${SKILLS_REPOS[2]} installed with" \
+        'npx skills, then an initial commit, then the workspace'\''s own scripts/setup.' \
         'Needs git, gh signed in, and npx.' \
         '' \
         '  --user         GitHub user or org whose dotfiles and vault repos setup' \
@@ -69,12 +70,12 @@ while [ $# -gt 0 ]; do
       exit 0
       ;;
     -*)
-      echo "setup-devroot: unknown option '$1'" >&2
+      echo "install.sh: unknown option '$1'" >&2
       exit 2
       ;;
     *)
       [ -z "$DIR" ] || {
-        echo "setup-devroot: expected one directory, got '$DIR' and '$1'" >&2
+        echo "install.sh: expected one directory, got '$DIR' and '$1'" >&2
         exit 2
       }
       DIR="$1"
@@ -84,11 +85,11 @@ while [ $# -gt 0 ]; do
 done
 
 [ -n "$DIR" ] || {
-  echo "setup-devroot: expected the directory to create, such as ~/devroot" >&2
+  echo "install.sh: expected the directory to create, such as ~/devroot" >&2
   exit 2
 }
 [ -n "$USER_OWNER" ] || {
-  echo "setup-devroot: --user <owner> names whose dotfiles and vault repos to bring in" >&2
+  echo "install.sh: --user <owner> names whose dotfiles and vault repos to bring in" >&2
   exit 2
 }
 
@@ -104,18 +105,18 @@ run() {
 
 for tool in git npx; do
   command -v "$tool" > /dev/null || {
-    echo "setup-devroot: needs $tool" >&2
+    echo "install.sh: needs $tool" >&2
     exit 1
   }
 done
 if [ -z "$TEMPLATE" ]; then
   command -v gh > /dev/null && gh auth status > /dev/null 2>&1 || {
-    echo "setup-devroot: needs gh, signed in (gh auth login), to fetch the template" >&2
+    echo "install.sh: needs gh, signed in (gh auth login), to fetch the template" >&2
     exit 1
   }
 else
   [ -f "$TEMPLATE/AGENTS.md" ] && [ -d "$TEMPLATE/scripts" ] || {
-    echo "setup-devroot: $TEMPLATE is not a devroot template (no AGENTS.md and scripts/)" >&2
+    echo "install.sh: $TEMPLATE is not a devroot template (no AGENTS.md and scripts/)" >&2
     exit 1
   }
 fi
@@ -124,7 +125,7 @@ case "$DIR" in
   "~"/*) DIR="$HOME/${DIR#"~"/}" ;;
 esac
 if [ -e "$DIR" ] && [ -n "$(ls -A "$DIR" 2> /dev/null)" ]; then
-  echo "setup-devroot: $DIR exists and is not empty" >&2
+  echo "install.sh: $DIR exists and is not empty" >&2
   exit 1
 fi
 
@@ -141,7 +142,7 @@ else
   # moves when the template does.
   version=$(gh api "repos/$TEMPLATE_REPO/commits?path=$TEMPLATE_DIR&per_page=1" --jq '.[0].sha')
   [ -n "$version" ] || {
-    echo "setup-devroot: could not resolve the latest $TEMPLATE_DIR commit on $TEMPLATE_REPO" >&2
+    echo "install.sh: could not resolve the latest $TEMPLATE_DIR commit on $TEMPLATE_REPO" >&2
     exit 1
   }
   say "fetch    $TEMPLATE_REPO/$TEMPLATE_DIR@${version:0:7} -> $DIR"
@@ -152,7 +153,7 @@ else
     tar -xzf "$tmp/template.tar.gz" -C "$tmp"
     src=$(find "$tmp" -mindepth 2 -maxdepth 2 -type d -name "$TEMPLATE_DIR" | head -1)
     [ -n "$src" ] || {
-      echo "setup-devroot: $TEMPLATE_REPO has no $TEMPLATE_DIR/ directory" >&2
+      echo "install.sh: $TEMPLATE_REPO has no $TEMPLATE_DIR/ directory" >&2
       exit 1
     }
     mkdir -p "$DIR"

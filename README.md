@@ -22,19 +22,15 @@ This repo ([huntiestack](https://github.com/huntie/huntiestack)) is a public sta
 
 ## Get started
 
-Install all huntiestack skills (shortcut for `npx skills add huntie/huntiestack`):
+Ask your agent to set up your devroot repo:
 
-    npx huntiestack
+    Set up my devroot. Follow https://raw.githubusercontent.com/huntie/huntiestack/main/INSTALL.md
 
-Then, ask your agent to set up your devroot repo:
-
-    /setup-devroot
-
-The setup skill fetches `devroot-template-latest/`, installs [skills](https://github.com/huntie/skills), writes the initial commit, and runs the minimal workspace setup script.
+Your agent asks where the devroot should go, then fetches `devroot-template-latest/`, installs [skills](https://github.com/huntie/skills), writes the initial commit, and runs the minimal workspace setup script.
 
 #### This is a starting point!
 
-Everyone's dev setup is different. `/setup-devroot` gives you a folder structure, control plane scripts, and the `vault` repo. You're free to customise the vault as you need, as well as to uninstall my skills in `skills-lock.json` and fork them in your `skills/` folder. Build what works for you 💯.
+Everyone's dev setup is different. The install gives you a folder structure, control plane scripts, and the `vault` repo. You're free to customise the vault as you need, as well as to uninstall my skills in `skills-lock.json` and fork them in your `skills/` folder. Build what works for you 💯.
 
 ## How I use devroot
 
