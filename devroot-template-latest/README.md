@@ -1,6 +1,6 @@
-# devroot ("huntiestack")
+# devroot
 
-This is your personal development monorepo, created by [`/setup-huntiestack`](https://github.com/huntie/huntiestack).
+This is your personal development monorepo, created by [setup-devroot](https://github.com/huntie/setup-devroot).
 
 #### Table of contents
 
@@ -37,11 +37,11 @@ You will have initialized this repo at `~/devroot/` (or another location of your
 
 #### Maintaining devroot
 
-- [huntiestack](https://github.com/huntie/huntiestack) also includes an `/update-devroot` skill. Run this if you wish to compare and bring in any upstream changes from the latest version.
+- [setup-devroot](https://github.com/huntie/setup-devroot) also includes an `/update-devroot` skill. Run this if you wish to compare and bring in any upstream changes from the latest version.
 
 Happy shipping,\
 Alex 👨🏻‍💻\
-[Follow me on X](https://x.com/huntie) • [Feedback](https://github.com/huntie/huntiestack/issues)
+[Follow me on X](https://x.com/huntie) • [Feedback](https://github.com/huntie/setup-devroot/issues)
 
 ## Layout and conventions
 

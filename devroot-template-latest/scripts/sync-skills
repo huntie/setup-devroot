@@ -91,8 +91,8 @@ link_skill() {
 # A directory whose name starts with "_" is a group, not a skill: each of its
 # children is linked by its own name, one level deep. Skill names stay unique
 # across the tree, which the clash check enforces. _public/ is never linked:
-# it holds what publish-huntiestack ships, a public copy in place of a private
-# skill of the same name, or a skill only the public uses.
+# it holds what scripts/publish ships, a public copy in place of a private
+# skill of the same name.
 for src in "$SKILLS_DIR"/*/; do
   [ -d "$src" ] || continue
   name=$(basename "$src")
