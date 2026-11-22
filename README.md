@@ -24,7 +24,8 @@ This repo is a public starter kit for this setup, mirrored from my personal devr
 
 Ask your agent to set up your devroot repo:
 
-    Set up my devroot. Follow https://raw.githubusercontent.com/huntie/setup-devroot/main/INSTALL.md
+    Set up my devroot.
+    Follow https://raw.githubusercontent.com/huntie/setup-devroot/main/INSTALL.md
 
 Your agent asks where the devroot should go, then fetches `devroot-template-latest/`, installs [skills](https://github.com/huntie/skills), writes the initial commit, and runs the minimal workspace setup script.
 
