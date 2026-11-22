@@ -1,0 +1,27 @@
+{
+  "name": "huntiestack",
+  "version": "0.2.0",
+  "description": "Build a single agent-first dev workspace",
+  "license": "MIT",
+  "author": "Alex Hunt",
+  "homepage": "https://github.com/huntie/setup-devroot#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huntie/setup-devroot.git",
+    "directory": "npm"
+  },
+  "type": "module",
+  "bin": {
+    "huntiestack": "bin/huntiestack.mjs"
+  },
+  "files": [
+    "bin"
+  ],
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}
