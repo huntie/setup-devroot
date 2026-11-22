@@ -1,13 +1,13 @@
 ---
 name: update-devroot
-description: Bring a devroot made from the huntiestack template up to date with the latest template, merged with local edits, as one commit. Use only when the user invokes /update-devroot.
+description: Bring a devroot made from the `huntie/setup-devroot` template up to date with the latest template, merged with local edits, as one commit. Use only when the user invokes /update-devroot.
 license: MIT
 disable-model-invocation: true
 ---
 
 # Update devroot
 
-A devroot made by huntiestack's `install.sh` is a copy of huntiestack's `devroot-template-latest/` at one commit, recorded in `.devroot-version`. This skill brings the template files up to that directory's latest commit as one commit titled `Update devroot to <sha>`, merging the template's changes three-way with the user's own edits so those survive. The mechanics live in this skill's `scripts/update-devroot`; read its `--help` first.
+A devroot made by `install.sh` is a copy of `devroot-template-latest/` in `huntie/setup-devroot` at one commit, recorded in `.devroot-version`. This skill brings the template files up to that directory's latest commit as one commit titled `Update devroot to <sha>`, merging the template's changes three-way with the user's own edits so those survive. The mechanics live in this skill's `scripts/update-devroot`; read its `--help` first.
 
 1. Check the GitHub CLI: `gh auth status`. Without `gh`, or signed out, stop and give the `gh auth login` step; the template is fetched through it.
 2. Confirm the session is inside the devroot to update, a git checkout with `AGENTS.md` and `scripts/`, with a clean tree. Uncommitted changes are the user's to commit first; never stash or discard them.

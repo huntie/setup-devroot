@@ -2,7 +2,7 @@
   "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
   "groupings": [
     {
-      "title": "Set up huntiestack",
+      "title": "Set up devroot",
       "description": "Set up and maintain an agent-first dev workspace.",
       "skills": ["update-devroot", "setup-vault"]
     }

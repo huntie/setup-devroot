@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Create a devroot workspace from the huntiestack template, with the public skills installed and an initial commit.
+# Create a devroot workspace from the devroot template, with the public skills installed and an initial commit.
 #
 # The template is fetched from the public repo through gh at its latest
 # commit touching the template, and that commit's sha is written to
@@ -18,7 +18,7 @@
 
 set -euo pipefail
 
-TEMPLATE_REPO="huntie/huntiestack"
+TEMPLATE_REPO="huntie/setup-devroot"
 TEMPLATE_DIR="devroot-template-latest"
 SKILLS_REPOS=("huntie/skills" "huntie/skills-pstack-vendored" "$TEMPLATE_REPO")
 
@@ -182,9 +182,9 @@ done
 # #endregion
 # #region the initial commit
 
-say "commit   Initialize devroot from huntiestack"
+say "commit   Initialize devroot"
 run git -C "$DIR" add -A
-run git -C "$DIR" commit -q -m "Initialize devroot from huntiestack"
+run git -C "$DIR" commit -q -m "Initialize devroot"
 
 # #endregion
 # #region the workspace's own setup

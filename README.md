@@ -1,6 +1,6 @@
-# huntiestack (Preview)
+# devroot (Preview)
 
-[![skills.sh](https://skills.sh/b/huntie/huntiestack)](https://skills.sh/huntie/huntiestack)
+[![skills.sh](https://skills.sh/b/huntie/setup-devroot)](https://skills.sh/huntie/setup-devroot)
 
 **Build a single agent-first dev workspace.**
 
@@ -8,9 +8,9 @@
 
 [Rebuilding Meta's Dev Stack Out of Meta | React Native Live](https://www.youtube.com/live/zazUsINu9AQ?si=v33vCNORWM08H9D_&t=613)
 
-## What is huntiestack?
+## What is devroot?
 
-huntiestack is an opinionated dev setup revolving around the `devroot` repo — a single private mega-workspace for all development work, designed to replace your traditional `~/Development` folder.
+devroot is an opinionated dev setup revolving around one repo — a single private mega-workspace for all development work, designed to replace your traditional `~/Development` folder.
 
 `devroot` gives your agent a **superpowered frame** to work in:
 - A folder structure, scripts, and skills empowering it to checkout your projects **and work across them**.
@@ -18,13 +18,13 @@ huntiestack is an opinionated dev setup revolving around the `devroot` repo — 
 - An refined commit workflow for high quality PRs and **Meta-like source control** (optional).
 - All of this, portable across sessions and machines, meaning you can trivially set up bots that **behave like you**.
 
-This repo ([huntiestack](https://github.com/huntie/huntiestack)) is a public starter kit for this setup, mirrored from my personal `huntie/devroot` repo.
+This repo is a public starter kit for this setup, mirrored from my personal devroot.
 
 ## Get started
 
 Ask your agent to set up your devroot repo:
 
-    Set up my devroot. Follow https://raw.githubusercontent.com/huntie/huntiestack/main/INSTALL.md
+    Set up my devroot. Follow https://raw.githubusercontent.com/huntie/setup-devroot/main/INSTALL.md
 
 Your agent asks where the devroot should go, then fetches `devroot-template-latest/`, installs [skills](https://github.com/huntie/skills), writes the initial commit, and runs the minimal workspace setup script.
 

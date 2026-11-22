@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
-# Bring a devroot's template files up to date with huntiestack, as one commit.
+# Bring a devroot's template files up to date with the devroot template, as one commit.
 #
-# The base is the huntiestack commit in .devroot-version, or for a devroot made
+# The base is the template commit in .devroot-version, or for a devroot made
 # before that file existed, the last template commit at or before the initial
 # commit's date; --from overrides either. The template at the base and at the
 # latest template commit are fetched through gh, committed one after the other
@@ -17,7 +17,7 @@
 
 set -euo pipefail
 
-TEMPLATE_REPO="huntie/huntiestack"
+TEMPLATE_REPO="huntie/setup-devroot"
 TEMPLATE_DIR="devroot-template-latest"
 VERSION_FILE=".devroot-version"
 
@@ -104,9 +104,9 @@ elif [ -f "$ROOT/$VERSION_FILE" ]; then
   }
   say "base     ${base:0:7} ($VERSION_FILE)"
 else
-  initial=$(root_git log --reverse --format=%cI --grep='^Initialize devroot from huntiestack' | head -1)
+  initial=$(root_git log --reverse --format=%cI --grep='^Initialize devroot' | head -1)
   [ -n "$initial" ] || {
-    echo "update-devroot: no $VERSION_FILE and no initial huntiestack commit to date it from; pass --from <sha>" >&2
+    echo "update-devroot: no $VERSION_FILE and no initial commit to date it from; pass --from <sha>" >&2
     exit 1
   }
   base=$(api_sha "repos/$TEMPLATE_REPO/commits?path=$TEMPLATE_DIR&until=$initial&per_page=1" '.[0].sha')

@@ -2,7 +2,7 @@
 
 This guide is for a coding agent. Follow it to create a devroot for the user you are working with.
 
-A devroot is a workspace repository that agent sessions run from: a few scripts, an `AGENTS.md` that says how to work, and the skills under its agent directories, with project checkouts, dotfiles and a vault beside them. The mechanics live in [`install.sh`](https://raw.githubusercontent.com/huntie/huntiestack/main/install.sh); the steps below are the questions and judgment around it.
+A devroot is a workspace repository that agent sessions run from: a few scripts, an `AGENTS.md` that says how to work, and the skills under its agent directories, with project checkouts, dotfiles and a vault beside them. The mechanics live in [`install.sh`](https://raw.githubusercontent.com/huntie/setup-devroot/main/install.sh); the steps below are the questions and judgment around it.
 
 ## Setup
 
@@ -30,7 +30,7 @@ Most users have neither yet, and that is the expected case: setup notes what it 
 Fetch the script to a temporary directory and read its `--help`:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/huntie/huntiestack/main/install.sh -o "$TMPDIR/devroot-install.sh"
+curl -fsSL https://raw.githubusercontent.com/huntie/setup-devroot/main/install.sh -o "$TMPDIR/devroot-install.sh"
 bash "$TMPDIR/devroot-install.sh" --help
 ```
 
@@ -43,8 +43,8 @@ bash "$TMPDIR/devroot-install.sh" <path> --user <user>
 
 The script does the following:
 
-- Fetches `devroot-template-latest/` from `huntie/huntiestack` at its latest commit, and records that commit in `.devroot-version`, which `/update-devroot` reads later.
-- Installs the skills from `huntie/skills`, `huntie/skills-pstack-vendored` and `huntie/huntiestack` into the workspace's agent directories.
+- Fetches `devroot-template-latest/` from `huntie/setup-devroot` at its latest commit, and records that commit in `.devroot-version`, which `/update-devroot` reads later.
+- Installs the skills from `huntie/skills`, `huntie/skills-pstack-vendored` and `huntie/setup-devroot` into the workspace's agent directories.
 - Writes the initial commit.
 - Runs the workspace's own `scripts/setup`.
 
