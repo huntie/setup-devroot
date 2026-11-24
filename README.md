@@ -2,7 +2,7 @@
 
 [![skills.sh](https://skills.sh/b/huntie/setup-devroot)](https://skills.sh/huntie/setup-devroot)
 
-**Build a single agent-first dev workspace.**
+**One workspace for you and your agents.**
 
 <img width="250" src="https://github.com/user-attachments/assets/2fa0e819-8d8a-435c-bad9-f2f147984a1f" />
 
