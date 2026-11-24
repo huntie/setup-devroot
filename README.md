@@ -10,7 +10,7 @@
 
 ## What is devroot?
 
-devroot is an opinionated dev setup built around one repo: a personal, private workspace where you and your agents do all your development work, in place of the traditional `~/Development` folder.
+devroot is an opinionated dev setup built around one repo: a personal, private workspace where you and your agents do all your development work. It can replace your `~/Development` folder, or live anywhere you want.
 
 `devroot` gives your agent a **superpowered frame** to work in:
 - A folder structure, scripts, and skills empowering it to checkout your projects **and work across them**.
