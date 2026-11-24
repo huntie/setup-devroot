@@ -1,4 +1,4 @@
-# devroot (Preview)
+# devroot ("huntiestack")
 
 [![skills.sh](https://skills.sh/b/huntie/setup-devroot)](https://skills.sh/huntie/setup-devroot)
 
